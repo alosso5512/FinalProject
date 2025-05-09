@@ -146,28 +146,17 @@
 
       const li = document.createElement("li");
       li.classList.add("book");
-      
-      let starRatingHTML = '';
-    if (status === "Finished") {
-      starRatingHTML = `
-        <div class="stars">
-          ${[1,2,3,4,5].map(i => `<span class="star" data-value="${i}">&#9733;</span>`).join('')}
-        </div>
-      `;
-    }
-      
-      li.innerHTML = `
+      li.innerHTML = 
         <span class="book-title">${title}</span>
         <span class="author">by ${author}</span>
         <span class="status">${status}</span>
-       ;
-      
+      ;
       bookList.appendChild(li);
+
       bookForm.reset();
     });
   </script>
 </body>
 </html>
-
 
 
