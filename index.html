@@ -2,85 +2,300 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>The Bookbag</title>
+
+  <!-- Google Font: Comfortaa -->
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;600;700&display=swap" rel="stylesheet" />
+
   <style>
-    body { font-family: 'Comfortaa', sans-serif; background: #f5f0ff; margin: 0; padding: 20px; }
-    h1 { color: #4a2c84; }
-    .section { margin-bottom: 2rem; }
-    .book { background: #fff; padding: 1rem; border: 1px solid #ccc; margin: 0.5rem 0; border-radius: 8px; }
-    form { display: inline-block; margin-top: 0.5rem; }
-    select, input[type="checkbox"], button { margin: 0.25rem; }
+    body {
+      font-family: 'Comfortaa', cursive;
+      margin: 0;
+      padding: 0;
+      background: url('https://www.toptal.com/designers/subtlepatterns/uploads/marble.png');
+      background-size: cover;
+      background-attachment: fixed;
+    }
+
+    header {
+      background: rgba(74, 44, 132, 0.95);
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      color: #4a2c84;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    input, select, button {
+      padding: 0.5rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-family: 'Comfortaa', cursive;
+    }
+
+    button {
+      background-color: #4a2c84;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .book-section {
+      margin-bottom: 2rem;
+    }
+
+    .book-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding: 1rem 0;
+      border-top: 5px solid #a87d4f;
+      border-bottom: 5px solid #a87d4f;
+      background: #f3ede0;
+      position: relative;
+    }
+
+    .book-list::after {
+      content: "";
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 100%;
+      height: 8px;
+      background: #a87d4f;
+      box-shadow: inset 0 3px #8a6333;
+    }
+
+    .book {
+      background: #c2b6e8;
+      border-left: 6px solid #4a2c84;
+      color: #333;
+      padding: 1rem;
+      width: 150px;
+      min-height: 120px;
+      border-radius: 6px;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .book-title {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .status {
+      font-size: 0.85rem;
+      font-style: italic;
+      color: #555;
+    }
+
+    .book select {
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .stars {
+      margin-top: 0.5rem;
+    }
+
+    .star {
+      font-size: 1.2rem;
+      color: gray;
+      cursor: pointer;
+    }
+
+    .star.filled {
+      color: gold;
+    }
+
+    .book-buttons {
+      position: absolute;
+      bottom: 0.5rem;
+      left: 0.5rem;
+      display: flex;
+      gap: 0.3rem;
+    }
+
+    .book-buttons button {
+      font-size: 0.7rem;
+      padding: 0.2rem 0.4rem;
+    }
   </style>
 </head>
 <body>
-  <h1>The Bookbag 📚</h1>
+  <header>
+    <h1>The Bookbag</h1>
+    <p>Your personal book tracker</p>
+  </header>
 
-  <!-- Add New Book -->
-  <form action="/add" method="POST">
-    <input type="text" name="title" placeholder="Title" required>
-    <input type="text" name="author" placeholder="Author" required>
-    <select name="status">
-      <option value="Currently Reading">Currently Reading</option>
-      <option value="Finished">Finished</option>
-      <option value="DNF">DNF</option>
-    </select>
-    <input type="number" name="rating" placeholder="Rating (1-5)">
-    <label><input type="checkbox" name="favorite"> Favorite</label>
-    <button type="submit">Add Book</button>
-  </form>
+  <div class="container">
+    <h2>Add a Book</h2>
+    <form id="book-form">
+      <input type="text" id="title" placeholder="Book title" required />
+      <input type="text" id="author" placeholder="Author" required />
+      <select id="status">
+        <option value="Currently Reading">Currently Reading</option>
+        <option value="Finished">Finished</option>
+        <option value="DNF">DNF</option>
+      </select>
+      <button type="submit">Add Book</button>
+    </form>
 
-  <!-- Favorite Books -->
-  {% if favorites %}
-  <div class="section">
-    <h2>🌟 Favorites</h2>
-    {% for book in favorites %}
-    <div class="book">
-      <strong>{{ book.title }}</strong> by {{ book.author }} ({{ book.status }}) — ⭐ {{ book.rating or "N/A" }}
-      <form action="/update/{{ book.id }}" method="POST">
-        <select name="status">
-          <option {% if book.status == 'Currently Reading' %}selected{% endif %}>Currently Reading</option>
-          <option {% if book.status == 'Finished' %}selected{% endif %}>Finished</option>
-          <option {% if book.status == 'DNF' %}selected{% endif %}>DNF</option>
-        </select>
-        <input type="number" name="rating" placeholder="Rating (1-5)" value="{{ book.rating or '' }}">
-        <label><input type="checkbox" name="favorite" {% if book.favorite %}checked{% endif %}> Favorite</label>
-        <button type="submit">Update</button>
-      </form>
-      <form action="/delete/{{ book.id }}" method="POST" style="display:inline;">
-        <button type="submit">Delete</button>
-      </form>
+    <h2>Your Book List</h2>
+
+    <div class="book-section">
+      <h3>Currently Reading</h3>
+      <ul id="currently-reading" class="book-list"></ul>
     </div>
-    {% endfor %}
+
+    <div class="book-section">
+      <h3>Finished</h3>
+      <ul id="finished" class="book-list"></ul>
+    </div>
+
+    <div class="book-section">
+      <h3>DNF</h3>
+      <ul id="dnf" class="book-list"></ul>
+    </div>
   </div>
-  {% endif %}
 
-  <!-- Other Categories -->
-  {% for label, book_list in [('📖 Currently Reading', currently_reading), ('✅ Finished', finished), ('🚫 DNF', dnf)] %}
-    {% if book_list %}
-    <div class="section">
-      <h2>{{ label }}</h2>
-      {% for book in book_list %}
-      <div class="book">
-        <strong>{{ book.title }}</strong> by {{ book.author }} — ⭐ {{ book.rating or "N/A" }}
-        <form action="/update/{{ book.id }}" method="POST">
-          <select name="status">
-            <option {% if book.status == 'Currently Reading' %}selected{% endif %}>Currently Reading</option>
-            <option {% if book.status == 'Finished' %}selected{% endif %}>Finished</option>
-            <option {% if book.status == 'DNF' %}selected{% endif %}>DNF</option>
-          </select>
-          <input type="number" name="rating" placeholder="Rating (1-5)" value="{{ book.rating or '' }}">
-          <label><input type="checkbox" name="favorite" {% if book.favorite %}checked{% endif %}> Favorite</label>
-          <button type="submit">Update</button>
-        </form>
-        <form action="/delete/{{ book.id }}" method="POST" style="display:inline;">
-          <button type="submit">Delete</button>
-        </form>
-      </div>
-      {% endfor %}
-    </div>
-    {% endif %}
-  {% endfor %}
+  <script>
+    const bookForm = document.getElementById("book-form");
+
+    const sections = {
+      "Currently Reading": document.getElementById("currently-reading"),
+      "Finished": document.getElementById("finished"),
+      "DNF": document.getElementById("dnf")
+    };
+
+    function loadBooks() {
+      const saved = JSON.parse(localStorage.getItem("books")) || [];
+      saved.forEach(book => {
+        const li = createBookElement(book.title, book.author, book.status, book.rating);
+        sections[book.status].appendChild(li);
+      });
+    }
+
+    function saveBooks() {
+      const books = [];
+      Object.entries(sections).forEach(([status, ul]) => {
+        ul.querySelectorAll(".book").forEach(bookEl => {
+          books.push({
+            title: bookEl.querySelector(".book-title").textContent,
+            author: bookEl.querySelector(".author").textContent.replace(/^by\s/, ""),
+            status: bookEl.querySelector(".status").textContent,
+            rating: bookEl.querySelectorAll(".star.filled").length
+          });
+        });
+      });
+      localStorage.setItem("books", JSON.stringify(books));
+    }
+
+    bookForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const title = document.getElementById("title").value;
+      const author = document.getElementById("author").value;
+      const status = document.getElementById("status").value;
+
+      const li = createBookElement(title, author, status);
+      sections[status].appendChild(li);
+      bookForm.reset();
+      saveBooks();
+    });
+
+    function createBookElement(title, author, status, rating = 0) {
+      const li = document.createElement("li");
+      li.classList.add("book");
+      li.innerHTML = `
+        <span class="book-title">${title}</span>
+        <span class="author">by ${author}</span>
+        <span class="status">${status}</span>
+        <select class="status-dropdown">
+          <option value="Currently Reading" ${status === "Currently Reading" ? "selected" : ""}>Currently Reading</option>
+          <option value="Finished" ${status === "Finished" ? "selected" : ""}>Finished</option>
+          <option value="DNF" ${status === "DNF" ? "selected" : ""}>DNF</option>
+        </select>
+        <div class="stars" style="display: ${status === 'Finished' ? 'block' : 'none'}">
+          ${[1,2,3,4,5].map(n => `<span class="star ${n <= rating ? 'filled' : ''}" data-value="${n}">&#9733;</span>`).join('')}
+        </div>
+        <div class="book-buttons">
+          <button class="edit">Edit</button>
+          <button class="delete">Delete</button>
+        </div>
+      `;
+
+      const dropdown = li.querySelector(".status-dropdown");
+      const starsContainer = li.querySelector(".stars");
+      const deleteBtn = li.querySelector(".delete");
+      const editBtn = li.querySelector(".edit");
+
+      dropdown.addEventListener("change", function () {
+        const newStatus = dropdown.value;
+        li.querySelector(".status").textContent = newStatus;
+        li.remove();
+        sections[newStatus].appendChild(li);
+        if (starsContainer) {
+          starsContainer.style.display = newStatus === "Finished" ? "block" : "none";
+        }
+        saveBooks();
+      });
+
+      if (starsContainer) {
+        starsContainer.querySelectorAll('.star').forEach(star => {
+          star.addEventListener('click', () => {
+            const value = parseInt(star.dataset.value);
+            starsContainer.querySelectorAll('.star').forEach(s => {
+              s.classList.toggle('filled', parseInt(s.dataset.value) <= value);
+            });
+            saveBooks();
+          });
+        });
+      }
+
+      deleteBtn.addEventListener("click", () => {
+        li.remove();
+        saveBooks();
+      });
+
+      editBtn.addEventListener("click", () => {
+        document.getElementById("title").value = title;
+        document.getElementById("author").value = author;
+        document.getElementById("status").value = status;
+        li.remove();
+        saveBooks();
+      });
+
+      return li;
+    }
+
+    loadBooks();
+  </script>
 </body>
 </html>
+
 
 
