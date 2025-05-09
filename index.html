@@ -146,13 +146,28 @@
 
       const li = document.createElement("li");
       li.classList.add("book");
-      li.innerHTML = 
+      
+      let starRatingHTML = '';
+    if (status === "Finished") {
+      starRatingHTML = `
+        <div class="stars">
+          ${[1,2,3,4,5].map(i => `<span class="star" data-value="${i}">&#9733;</span>`).join('')}
+        </div>
+      `;
+    }
+      
+      li.innerHTML = `
         <span class="book-title">${title}</span>
         <span class="author">by ${author}</span>
         <span class="status">${status}</span>
-      ;
-      bookList.appendChild(li);
+      <button class="delete-btn">Delete</button>
+    `;
 
+    li.querySelector(".delete-btn").addEventListener("click", () => {
+      li.remove();
+    });
+      
+      bookList.appendChild(li);
       bookForm.reset();
     });
   </script>
