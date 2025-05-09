@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -7,7 +6,6 @@
   <title>The Bookbag</title>
 
   <!-- Google Font: Comfortaa -->
-
   <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;600;700&display=swap" rel="stylesheet" />
 
   <style>
@@ -109,7 +107,6 @@
       color: #555;
     }
   </style>
-
 </head>
 <body>
   <header>
@@ -130,13 +127,10 @@
       <button type="submit">Add Book</button>
     </form>
 
-```
-<h2>Your Book List</h2>
-<ul id="book-list">
-  <!-- Books will be added here -->
-</ul>
-```
-
+    <h2>Your Book List</h2>
+    <ul id="book-list">
+      <!-- Books will be added here -->
+    </ul>
   </div>
 
   <script>
@@ -152,16 +146,15 @@
 
       const li = document.createElement("li");
       li.classList.add("book");
-      li.innerHTML = 
+      li.innerHTML = `
         <span class="book-title">${title}</span>
         <span class="author">by ${author}</span>
         <span class="status">${status}</span>
-      ;
+      `;
       bookList.appendChild(li);
 
       bookForm.reset();
     });
   </script>
-
 </body>
 </html>
