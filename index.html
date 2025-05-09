@@ -128,9 +128,9 @@
     </form>
 
     <h2>Your Book List</h2>
-    <ul id="book-list">
+    <div id="book-list">
       <!-- Books will be added here -->
-    </ul>
+    </div>
   </div>
 
   <script>
@@ -144,14 +144,14 @@
       const author = document.getElementById("author").value;
       const status = document.getElementById("status").value;
 
-      const li = document.createElement("li");
-      li.classList.add("book");
-      li.innerHTML = `
+      const bookCard = document.createElement("div");
+      bookCard.classList.add("book");
+      bookCard.innerHTML = `
         <span class="book-title">${title}</span>
         <span class="author">by ${author}</span>
         <span class="status">${status}</span>
       `;
-      bookList.appendChild(li);
+      bookList.appendChild(bookCard);
 
       bookForm.reset();
     });
